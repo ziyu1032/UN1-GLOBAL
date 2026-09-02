@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Vision — Free Trade Port Challenge</title>
+<style>
+:root{
+  --dubai:#e8930c; --dubai-bg:#fff7e8; --dubai-dark:#b96f00;
+  --sg:#d63a4e; --sg-bg:#fdeef0; --sg-dark:#a82638;
+  --hainan:#0d9d70; --hainan-bg:#e8f8f2; --hainan-dark:#087a56;
+  --ink:#22303f; --muted:#6b7a8c; --line:#e3e9f0; --bg:#f4f7fa;
+  --good:#16a34a; --bad:#dc2626;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Segoe UI",system-ui,-apple-system,"Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;}
+.wrap{max-width:960px;margin:0 auto;padding:18px 16px 60px;}
+.screen{display:none;animation:fade .4s ease;}
+.screen.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h1{font-size:1.9rem;letter-spacing:.5px;}
+h2{font-size:1.35rem;margin-bottom:6px;}
+.sub{color:var(--muted);font-size:1rem;}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 4px 14px rgba(34,48,63,.06);}
+.center{text-align:center;}
+.btn{display:inline-block;border:none;cursor:pointer;font-size:1.02rem;font-weight:600;padding:12px 28px;border-radius:999px;background:var(--ink);color:#fff;transition:transform .15s,box-shadow .15s;font-family:inherit;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(34,48,63,.25);}
+.btn.big{font-size:1.15rem;padding:14px 40px;}
+.btn.ghost{background:#fff;color:var(--ink);border:2px solid var(--ink);}
+.btn.jump{background:linear-gradient(135deg,#0d9d70,#1f5c8b);}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none;}
+.badge{display:inline-block;font-size:.75rem;font-weight:700;letter-spacing:.5px;padding:3px 12px;border-radius:999px;background:#eef2f6;color:var(--muted);text-transform:uppercase;}
+
+/* ---------- HOME ---------- */
+.hero{background:linear-gradient(135deg,#16324f 0%,#1f5c8b 55%,#0d9d70 100%);color:#fff;border-radius:20px;padding:40px 28px;text-align:center;}
+.hero h1{font-size:2.2rem;margin-bottom:10px;}
+.hero .sub{color:#d6e6f2;font-size:1.05rem;}
+.hero .globe{font-size:3.2rem;display:block;margin-bottom:14px;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+.scorebar{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 18px;font-weight:600;margin:18px 0;}
+.scorebar .pts{color:var(--dubai-dark);}
+
+/* ---------- PORT PICK ---------- */
+.ports{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:18px;}
+.portcard{border-radius:16px;padding:24px 20px;cursor:pointer;position:relative;transition:transform .18s,box-shadow .18s;border:2px solid;text-align:left;font-family:inherit;}
+.portcard:hover{transform:translateY(-4px);box-shadow:0 10px 22px rgba(34,48,63,.14);}
+.portcard .icon{font-size:2.4rem;}
+.portcard h3{font-size:1.15rem;margin:6px 0 2px;}
+.portcard .loc{font-size:.85rem;opacity:.75;}
+.portcard .status{position:absolute;top:12px;right:14px;font-size:.78rem;font-weight:700;background:#fff;border-radius:999px;padding:3px 10px;color:var(--muted);}
+.portcard.done .status{color:var(--good);animation:pop .4s ease;}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+.pc-dubai{background:var(--dubai-bg);border-color:var(--dubai);}
+.pc-dubai h3{color:var(--dubai-dark);}
+.pc-sg{background:var(--sg-bg);border-color:var(--sg);}
+.pc-sg h3{color:var(--sg-dark);}
+.pc-hn{background:var(--hainan-bg);border-color:var(--hainan);}
+.pc-hn h3{color:var(--hainan-dark);}
+
+.jumpbar{margin-top:26px;text-align:center;background:#fff;border:2px dashed var(--hainan);border-radius:16px;padding:18px;}
+.jumpbar p{font-size:.92rem;color:var(--muted);margin-bottom:10px;}
+
+/* ---------- PORT STUDY + QUIZ ---------- */
+.portnav{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 12px;border-radius:999px;margin-bottom:10px;}
+.t-dubai{background:var(--dubai-bg);color:var(--dubai-dark);}
+.t-sg{background:var(--sg-bg);color:var(--sg-dark);}
+.t-hn{background:var(--hainan-bg);color:var(--hainan-dark);}
+.factlist{list-style:none;margin:8px 0 18px;}
+.factlist li{display:flex;gap:10px;padding:10px 4px;border-bottom:1px dashed var(--line);font-size:.97rem;align-items:flex-start;}
+.factlist .k{font-weight:700;min-width:118px;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.4px;padding-top:2px;}
+.qcount{font-size:.85rem;color:var(--muted);font-weight:600;margin-bottom:8px;}
+.qtext{font-size:1.2rem;font-weight:700;margin-bottom:18px;}
+.opts{display:grid;gap:10px;}
+.opt{background:#fff;border:2px solid var(--line);border-radius:12px;padding:13px 16px;text-align:left;font-size:1rem;cursor:pointer;transition:.15s;font-family:inherit;}
+.opt:hover:not(:disabled){border-color:var(--ink);}
+.opt.correct{border-color:var(--good);background:#edfaf1;font-weight:600;}
+.opt.wrong{border-color:var(--bad);background:#fdeeee;}
+.feedback{margin-top:14px;padding:12px 16px;border-radius:10px;font-size:.95rem;display:none;}
+.feedback.ok{display:block;background:#edfaf1;color:#12713a;}
+.feedback.no{display:block;background:#fdeeee;color:#a02222;}
+.nextbar{margin-top:18px;text-align:right;}
+.progressline{height:8px;background:#e6ecf2;border-radius:999px;overflow:hidden;margin:10px 0 20px;}
+.progressline i{display:block;height:100%;background:linear-gradient(90deg,var(--dubai),var(--sg),var(--hainan));border-radius:999px;transition:width .35s;}
+
+/* result */
+.resultbox{text-align:center;padding:14px 6px 6px;}
+.resultbox .big{font-size:3.2rem;animation:pop .5s ease;}
+.resultbox .score{font-size:2rem;font-weight:800;color:var(--dubai-dark);margin:4px 0;}
+.resultbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px;}
+
+/* ---------- BUILDER ---------- */
+.buildport{margin-bottom:26px;padding:20px;border-radius:16px;}
+.bp-dubai{background:var(--dubai-bg);}
+.bp-sg{background:var(--sg-bg);}
+.bp-hn{background:var(--hainan-bg);}
+.buildport h3{margin-bottom:4px;}
+.buildport .hint{font-size:.85rem;color:var(--muted);margin-bottom:12px;}
+.sentence{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:1.05rem;line-height:2;}
+.blank{display:inline-block;min-width:120px;border-bottom:3px dashed var(--muted);text-align:center;margin:0 2px;position:relative;vertical-align:bottom;}
+.blank.filled{border-bottom:3px solid var(--good);color:var(--ink);font-weight:700;padding:0 6px;}
+.choices{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.choice{background:#fff;border:2px solid var(--line);border-radius:999px;padding:8px 18px;cursor:pointer;font-size:.92rem;font-weight:600;transition:.15s;font-family:inherit;}
+.choice:hover:not(:disabled){border-color:var(--ink);}
+.choice.done{background:var(--good);border-color:var(--good);color:#fff;}
+.choice.bad{border-color:var(--bad);color:var(--bad);animation:shake .3s;}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.doneintro{margin-top:14px;background:#fff;border-left:5px solid var(--good);border-radius:8px;padding:14px 16px;font-size:.98rem;line-height:1.8;display:none;}
+.doneintro.show{display:block;animation:fade .4s;}
+.doneintro .cap{font-size:.75rem;font-weight:700;color:var(--good);text-transform:uppercase;letter-spacing:.6px;display:block;margin-bottom:4px;}
+
+/* ---------- FINISH ---------- */
+.finalscore{font-size:3rem;font-weight:800;color:var(--dubai-dark);}
+.starrow{font-size:1.8rem;letter-spacing:6px;margin:6px 0 14px;}
+.passports{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:20px 0;text-align:left;}
+.pp{border-radius:14px;padding:18px;border:2px solid;}
+.pp-dubai{border-color:var(--dubai);background:var(--dubai-bg);}
+.pp-sg{border-color:var(--sg);background:var(--sg-bg);}
+.pp-hn{border-color:var(--hainan);background:var(--hainan-bg);}
+.pp h4{margin-bottom:8px;font-size:1.05rem;}
+.pp p{font-size:.92rem;line-height:1.75;}
+.teacherbox{background:#eef5ff;border:1px solid #cfe0f5;border-radius:12px;padding:14px 18px;font-size:.9rem;color:#33506e;margin-top:18px;text-align:left;}
+@media print{.no-print{display:none!important}.screen{display:block!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ HOME ============ -->
+<section class="screen active" id="s-home">
+  <div class="hero">
+    <span class="globe">🌏</span>
+    <h1>Global Vision</h1>
+    <h1 style="font-size:1.3rem;font-weight:600;margin-bottom:8px;">Free Trade Port Challenge</h1>
+    <p class="sub">Pick a port, study it, pass its quiz — then introduce all three in English!</p>
+  </div>
+
+  <div class="scorebar">
+    <span>⭐ Score: <span class="pts" id="homeScore">0</span></span>
+    <span id="homeProgress">Ports completed: 0 / 3</span>
+  </div>
+
+  <div class="card">
+    <h2>🛂 Step 1 — Choose a Free Trade Port</h2>
+    <p class="sub">Click a card to study its facts and take a short quiz about that port. Finish all three, then build your introductions in Step 2.</p>
+    <div class="ports">
+      <button class="portcard pc-dubai" id="pc-dubai" onclick="openPort('dubai')">
+        <span class="status" id="st-dubai">Not visited</span>
+        <div class="icon">🏙️</div>
+        <h3>Jebel Ali Free Zone</h3>
+        <div class="loc">Dubai, United Arab Emirates</div>
+      </button>
+      <button class="portcard pc-sg" id="pc-sg" onclick="openPort('sg')">
+        <span class="status" id="st-sg">Not visited</span>
+        <div class="icon">🦁</div>
+        <h3>Singapore's Free Trade Zones</h3>
+        <div class="loc">Republic of Singapore</div>
+      </button>
+      <button class="portcard pc-hn" id="pc-hn" onclick="openPort('hn')">
+        <span class="status" id="st-hn">Not visited</span>
+        <div class="icon">🌴</div>
+        <h3>Hainan Free Trade Port</h3>
+        <div class="loc">Hainan, China</div>
+      </button>
+    </div>
+  </div>
+
+  <div class="jumpbar">
+    <p>✍️ Already familiar with the three ports? Skip the study &amp; quiz steps and go straight to the Introduction Builder.</p>
+    <button class="btn jump" onclick="go('build')">Go to Step 2 — Introduction Builder ✍️</button>
+  </div>
+
+  <div class="card" style="margin-top:20px;">
+    <h2>📋 Your Mission</h2>
+    <ul style="margin:8px 0 0 20px;font-size:.95rem;">
+      <li>🛂 <b>Step 1 (per port):</b> study the fact card, then answer 3 questions about <i>that</i> port. Return home and pick the next one.</li>
+      <li>✍️ <b>Step 2:</b> build an English introduction for each of the three ports and finish your report.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ PORT STUDY + QUIZ ============ -->
+<section class="screen" id="s-port">
+  <div class="portnav">
+    <button class="btn ghost" style="padding:8px 20px;font-size:.9rem;" onclick="go('home')">← Back to Home</button>
+    <span class="badge" id="portBadge"></span>
+  </div>
+
+  <!-- phase: study -->
+  <div class="card" id="phase-study">
+    <div class="center" style="margin-bottom:4px;">
+      <div style="font-size:3rem;" id="studyIcon"></div>
+      <h2 id="studyName"></h2>
+      <p class="sub" id="studyLoc"></p>
+      <span class="tag" id="studyYear"></span>
+    </div>
+    <ul class="factlist" id="studyFacts"></ul>
+    <button class="btn big" style="width:100%;" onclick="startPortQuiz()">I'm ready! Start the Quiz ❓</button>
+  </div>
+
+  <!-- phase: quiz -->
+  <div class="card" id="phase-quiz" style="display:none;">
+    <div class="qcount" id="qCount"></div>
+    <div class="progressline"><i id="quizBar" style="width:0%"></i></div>
+    <div class="qtext" id="qText"></div>
+    <div class="opts" id="qOpts"></div>
+    <div class="feedback" id="qFb"></div>
+    <div class="nextbar"><button class="btn" id="qNext" style="display:none;" onclick="nextQ()">Next →</button></div>
+  </div>
+
+  <!-- phase: result -->
+  <div class="card" id="phase-result" style="display:none;">
+    <div class="resultbox">
+      <div class="big" id="resIcon">🎉</div>
+      <h2 id="resTitle">Great job!</h2>
+      <p class="sub" id="resText"></p>
+      <div class="score" id="resScore"></div>
+      <div class="resultbtns">
+        <button class="btn ghost" onclick="go('home')">🏠 Return to Home</button>
+        <button class="btn" id="resNextPort" style="display:none;" onclick="go('home')">Next Port →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUILDER (STEP 2) ============ -->
+<section class="screen" id="s-build">
+  <div class="portnav">
+    <button class="btn ghost" style="padding:8px 20px;font-size:.9rem;" onclick="go('home')">← Back to Home</button>
+    <span class="badge">Step 2 · Introduction Builder</span>
+  </div>
+  <h2 class="center">✍️ Build Your Introductions</h2>
+  <p class="sub center">Choose the correct words to complete each introduction. When you finish, read it aloud — this is YOUR report!</p>
+  <div id="buildArea" style="margin-top:20px;"></div>
+  <div class="center no-print" style="margin-top:10px;">
+    <button class="btn" id="buildNext" disabled onclick="go('finish')">Finish My Report 🏆</button>
+  </div>
+</section>
+
+<!-- ============ FINISH ============ -->
+<section class="screen" id="s-finish">
+  <div class="card center">
+    <div style="font-size:3rem;">🏆</div>
+    <h2>Congratulations, Trade Reporter!</h2>
+    <p class="sub">You have explored the free trade ports and written your report.</p>
+    <div class="finalscore" id="finalScore">0</div>
+    <div class="sub">total points</div>
+    <div class="starrow" id="starRow"></div>
+    <div class="teacherbox no-print">
+      🖨️ <b>Tip:</b> Use your browser's <b>Print</b> button (Ctrl+P) to print the three introductions below — great for classroom speaking practice!
+    </div>
+  </div>
+  <h3 style="margin:24px 0 6px;">📰 Your Final Report — Three Free Trade Ports</h3>
+  <div class="passports" id="finalReport"></div>
+  <div class="center no-print" style="margin-top:22px;">
+    <button class="btn ghost" onclick="restart()">🔄 Play Again</button>
+  </div>
+</section>
+
+</div>
+
+<script>
+/* ================= DATA ================= */
+const PORTS = {
+  dubai:{
+    name:"Jebel Ali Free Zone", loc:"Dubai, United Arab Emirates", icon:"🏙️", yearLabel:"Founded", year:"1985",
+    model:"low taxes, a high degree of openness, and streamlined business licensing",
+    strengths:"a global logistics hub, 100% foreign ownership, and minimal restrictions",
+    industries:"logistics, re-export trade, aviation, and tourism",
+    identity:"a commercial hub built on openness and a free-market environment",
+    short:"Jebel Ali (Dubai)"
+  },
+  sg:{
+    name:"Singapore's Free Trade Zones", loc:"Republic of Singapore", icon:"🦁", yearLabel:"Founded", year:"1969",
+    model:"strong governance, strict regulation, and highly efficient customs",
+    strengths:"one of the world's most efficient ports, a global headquarters hub, and strong IP protection",
+    industries:"finance, high-tech manufacturing, shipping, and the digital economy",
+    identity:"a rule-based, high-efficiency, innovation-driven trade hub",
+    short:"Singapore FTZs"
+  },
+  hn:{
+    name:"Hainan Free Trade Port", loc:"Hainan, China", icon:"🌴", yearLabel:"Approved for establishment", year:"2018",
+    model:"phased liberalization and policy innovation with Chinese characteristics",
+    strengths:"zero-tariff lists, duty-free shopping, and national-level support",
+    industries:"tourism, modern services, the digital economy, and high-tech industries",
+    identity:"an emerging free trade port built for long-term strategic development",
+    short:"Hainan FTP (China)"
+  }
+};
+
+/* 3 quiz questions per port */
+const QUIZ = {
+  dubai:[
+    {q:"When was Jebel Ali Free Zone founded?", opts:["In 1969","In 1985","In 2018"], a:1,
+     ex:"Jebel Ali Free Zone was founded in 1985."},
+    {q:"Which one is a key strength of Jebel Ali Free Zone?", opts:["100% foreign ownership","Strong IP protection","Zero-tariff lists"], a:0,
+     ex:"Jebel Ali allows 100% foreign ownership with minimal restrictions."},
+    {q:"Which industries are most important in Jebel Ali Free Zone?", opts:["Finance and the digital economy","Logistics and re-export trade","High-tech manufacturing"], a:1,
+     ex:"Jebel Ali's key industries are logistics, re-export trade, aviation and tourism."}
+  ],
+  sg:[
+    {q:"When were Singapore's Free Trade Zones founded?", opts:["In 1969","In 1985","In 2018"], a:0,
+     ex:"Singapore's Free Trade Zones were founded in 1969."},
+    {q:"What is Singapore's development model known for?", opts:["Low taxes and free-market openness","Phased liberalization","Strong governance and highly efficient customs"], a:2,
+     ex:"Singapore follows a model of strong governance, strict regulation and highly efficient customs."},
+    {q:"Which is a key industry of Singapore's Free Trade Zones?", opts:["Finance and high-tech manufacturing","Aviation and re-export trade","Duty-free shopping"], a:0,
+     ex:"Singapore's key industries include finance, high-tech manufacturing, shipping and the digital economy."}
+  ],
+  hn:[
+    {q:"When was Hainan Free Trade Port approved for establishment?", opts:["In 1969","In 1985","In 2018"], a:2,
+     ex:"Hainan Free Trade Port was approved for establishment in 2018."},
+    {q:"Which policy advantages does Hainan Free Trade Port offer?", opts:["Zero-tariff lists and duty-free shopping","100% foreign ownership","The world's most efficient customs"], a:0,
+     ex:"Hainan offers zero-tariff lists, duty-free shopping and national-level support."},
+    {q:"How can we describe Hainan Free Trade Port's identity?", opts:["A rule-based, innovation-driven hub","An emerging port built for long-term strategic development","A commercial hub built on free-market openness"], a:1,
+     ex:"Hainan is an emerging free trade port built for long-term strategic development."}
+  ]
+};
+
+/* builder: blank options per port — correct index marked */
+const BUILD = {
+  dubai:[
+    {label:"year", options:["1969","1985","2018"], correct:1},
+    {label:"model", options:["low taxes, openness and streamlined licensing","strong governance and efficient customs","phased liberalization"], correct:0},
+    {label:"strength", options:["strong IP protection","zero-tariff lists","100% foreign ownership"], correct:2},
+    {label:"identity", options:["a commercial hub built on openness","a rule-based innovation hub","an emerging port for long-term strategy"], correct:0}
+  ],
+  sg:[
+    {label:"year", options:["1969","1985","2018"], correct:0},
+    {label:"model", options:["low taxes and free-market openness","strong governance, strict regulation and efficient customs","policy innovation with Chinese characteristics"], correct:1},
+    {label:"strength", options:["one of the world's most efficient ports","100% foreign ownership","duty-free shopping"], correct:0},
+    {label:"identity", options:["a commercial hub built on openness","a rule-based, high-efficiency, innovation-driven hub","an emerging port for long-term development"], correct:1}
+  ],
+  hn:[
+    {label:"year", options:["1969","1985","2018"], correct:2},
+    {label:"model", options:["low taxes and minimal restrictions","strict regulation and efficient customs","phased liberalization and policy innovation with Chinese characteristics"], correct:2},
+    {label:"strength", options:["zero-tariff lists, duty-free shopping and national-level support","100% foreign ownership","a global headquarters hub"], correct:0},
+    {label:"identity", options:["a rule-based innovation hub","an emerging free trade port for long-term strategic development","a commercial hub built on free markets"], correct:1}
+  ]
+};
+
+/* ================= STATE ================= */
+let state = {
+  score:0,
+  done:{dubai:false, sg:false, hn:false},
+  current:null,        // current port key while in s-port
+  qi:0, portCorrect:0, portPoints:0,
+  build:{dubai:null, sg:null, hn:null}
+};
+
+/* ================= NAV ================= */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='build' && !state.buildStarted){ startBuild(); }
+  if(id==='home'){ refreshHome(); }
+  if(id==='finish'){ showFinish(); }
+}
+function refreshHome(){
+  document.getElementById('homeScore').textContent = state.score;
+  const n = Object.values(state.done).filter(Boolean).length;
+  document.getElementById('homeProgress').textContent = 'Ports completed: '+n+' / 3';
+}
+function restart(){
+  state = {score:0, done:{dubai:false,sg:false,hn:false}, current:null, qi:0, portCorrect:0, portPoints:0, build:{dubai:null,sg:null,hn:null}};
+  ['dubai','sg','hn'].forEach(k=>{
+    const c=document.getElementById('pc-'+k);
+    c.classList.remove('done');
+    document.getElementById('st-'+k).textContent='Not visited';
+  });
+  document.getElementById('buildNext').disabled=true;
+  refreshHome();
+  go('home');
+}
+
+/* ================= PORT STUDY + QUIZ ================= */
+function openPort(key){
+  state.current=key;
+  state.qi=0; state.portCorrect=0; state.portPoints=0;
+  const p=PORTS[key];
+  const tagCls = key==='dubai'?'t-dubai':key==='sg'?'t-sg':'t-hn';
+  document.getElementById('portBadge').textContent = state.done[key] ? 'Revisiting · '+p.short : 'Now visiting · '+p.short;
+  // study phase
+  document.getElementById('studyIcon').textContent=p.icon;
+  document.getElementById('studyName').textContent=p.name;
+  document.getElementById('studyLoc').textContent=p.loc;
+  const yr=document.getElementById('studyYear');
+  yr.className='tag '+tagCls;
+  yr.textContent=p.yearLabel+': '+p.year;
+  document.getElementById('studyFacts').innerHTML = `
+    <li><span class="k">Model</span><span>${p.model}</span></li>
+    <li><span class="k">Strengths</span><span>${p.strengths}</span></li>
+    <li><span class="k">Key industries</span><span>${p.industries}</span></li>
+    <li><span class="k">Identity</span><span>${p.identity}</span></li>`;
+  // reset phases
+  document.getElementById('phase-study').style.display='block';
+  document.getElementById('phase-quiz').style.display='none';
+  document.getElementById('phase-result').style.display='none';
+  go('port');
+}
+function startPortQuiz(){
+  document.getElementById('phase-study').style.display='none';
+  document.getElementById('phase-quiz').style.display='block';
+  renderQ();
+}
+function renderQ(){
+  const qs=QUIZ[state.current];
+  const q=qs[state.qi];
+  document.getElementById('qCount').textContent='Question '+(state.qi+1)+' of '+qs.length+' — '+PORTS[state.current].short;
+  document.getElementById('quizBar').style.width=(state.qi/qs.length*100)+'%';
+  document.getElementById('qText').textContent=q.q;
+  const box=document.getElementById('qOpts');
+  box.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='opt'; b.textContent=o;
+    b.onclick=()=>answerQ(i,b);
+    box.appendChild(b);
+  });
+  document.getElementById('qFb').className='feedback';
+  document.getElementById('qNext').style.display='none';
+}
+function answerQ(i,btn){
+  const qs=QUIZ[state.current];
+  const q=qs[state.qi];
+  const btns=document.querySelectorAll('#qOpts .opt');
+  btns.forEach(b=>b.disabled=true);
+  btns[q.a].classList.add('correct');
+  const fb=document.getElementById('qFb');
+  if(i===q.a){
+    state.score+=10; state.portCorrect++; state.portPoints+=10;
+    fb.className='feedback ok'; fb.innerHTML='✅ <b>Correct! +10 points</b><br>'+q.ex;
+  }else{
+    btn.classList.add('wrong');
+    fb.className='feedback no'; fb.innerHTML='❌ <b>Not quite.</b> '+q.ex;
+  }
+  const nx=document.getElementById('qNext');
+  nx.style.display='inline-block';
+  nx.textContent = state.qi===qs.length-1 ? 'See My Result 🎉' : 'Next →';
+}
+function nextQ(){
+  const qs=QUIZ[state.current];
+  state.qi++;
+  if(state.qi<qs.length){ renderQ(); }
+  else{
+    document.getElementById('quizBar').style.width='100%';
+    // mark done
+    if(!state.done[state.current]){
+      state.done[state.current]=true;
+      const k=state.current;
+      document.getElementById('pc-'+k).classList.add('done');
+      document.getElementById('st-'+k).textContent='✓ Completed';
+    }
+    showPortResult();
+  }
+}
+function showPortResult(){
+  document.getElementById('phase-quiz').style.display='none';
+  document.getElementById('phase-result').style.display='block';
+  const qs=QUIZ[state.current], p=PORTS[state.current];
+  document.getElementById('resIcon').textContent = state.portCorrect===qs.length ? '🌟' : state.portCorrect>=2 ? '🎉' : '💪';
+  document.getElementById('resTitle').textContent = state.portCorrect===qs.length ? 'Perfect!' : state.portCorrect>=2 ? 'Great job!' : 'Keep going!';
+  document.getElementById('resText').textContent = 'You answered '+state.portCorrect+' of '+qs.length+' questions correctly about '+p.name+'.';
+  document.getElementById('resScore').textContent = '+'+state.portPoints+' points';
+  // offer next unfinished port
+  const next = ['dubai','sg','hn'].find(k=>!state.done[k]);
+  const btn=document.getElementById('resNextPort');
+  if(next){ btn.style.display='inline-block'; }
+  else{
+    btn.style.display='none';
+    document.getElementById('resText').textContent += ' You have completed all three ports — time to build your introductions in Step 2!';
+  }
+}
+
+/* ================= BUILDER ================= */
+function startBuild(){
+  state.buildStarted=true;
+  const area=document.getElementById('buildArea');
+  area.innerHTML='';
+  ['dubai','sg','hn'].forEach(key=>{
+    const p=PORTS[key];
+    const d=document.createElement('div');
+    d.className='buildport bp-'+(key==='dubai'?'dubai':key==='sg'?'sg':'hn');
+    d.innerHTML=`
+      <h3>${p.icon} ${p.name}</h3>
+      <div class="hint">Choose the correct word for each blank. Each correct choice = <b>+15 points</b>.</div>
+      <div class="sentence" id="sent-${key}"></div>
+      <div class="choices" id="ch-${key}"></div>
+      <div class="doneintro" id="intro-${key}"></div>
+    `;
+    area.appendChild(d);
+    renderBuildPort(key);
+  });
+}
+function renderBuildPort(key){
+  const p=PORTS[key];
+  if(!state.build[key]) state.build[key]=[null,null,null,null];
+  const filled=state.build[key];
+  const sent=document.getElementById('sent-'+key);
+  sent.innerHTML =
+    `<b>${p.name}</b> was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in ` +
+    blank(key,0) + `. It follows a model of ` + blank(key,1) +
+    `. It is famous for ` + blank(key,2) + `. Its key industries include ${p.industries}. In short, it is ` + blank(key,3) + `.`;
+  const chBox=document.getElementById('ch-'+key);
+  chBox.innerHTML='';
+  const idx=filled.indexOf(null);
+  if(idx>=0){
+    const b=BUILD[key][idx];
+    const lab=document.createElement('span');
+    lab.style.cssText='align-self:center;font-size:.82rem;color:var(--muted);font-weight:700;text-transform:uppercase;';
+    lab.textContent='Blank '+(idx+1)+':';
+    chBox.appendChild(lab);
+    b.options.forEach((opt,i)=>{
+      const btn=document.createElement('button');
+      btn.className='choice'; btn.textContent=opt;
+      btn.onclick=()=>fillBlank(key,idx,i,btn);
+      chBox.appendChild(btn);
+    });
+  }
+}
+function blank(key,i){
+  const v=state.build[key][i];
+  if(v===null) return `<span class="blank">❓ ${i+1}</span>`;
+  return `<span class="blank filled">${v}</span>`;
+}
+function fillBlank(key,idx,i,btn){
+  const b=BUILD[key][idx];
+  if(i===b.correct){
+    state.score+=15;
+    state.build[key][idx]=b.options[i];
+    btn.classList.add('done'); btn.disabled=true;
+    renderBuildPort(key);
+    checkPortDone(key);
+  }else{
+    btn.classList.add('bad');
+    setTimeout(()=>btn.classList.remove('bad'),500);
+  }
+}
+function checkPortDone(key){
+  const p=PORTS[key];
+  const f=state.build[key];
+  if(f.every(v=>v!==null)){
+    const intro=document.getElementById('intro-'+key);
+    intro.innerHTML='<span class="cap">✔ Your introduction — read it aloud!</span>'+
+      `<b>${p.name}</b> was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in <b>${f[0]}</b>. `+
+      `It follows a model of <b>${f[1]}</b>. It is famous for <b>${f[2]}</b>. `+
+      `Its key industries include <b>${p.industries}</b>. In short, it is <b>${f[3]}</b>.`;
+    intro.classList.add('show');
+  }
+  if(['dubai','sg','hn'].every(k=>state.build[k].every(v=>v!==null))){
+    document.getElementById('buildNext').disabled=false;
+  }
+}
+
+/* ================= FINISH ================= */
+function showFinish(){
+  document.getElementById('finalScore').textContent=state.score;
+  const max=90+180; /* quiz 9x10 + builder 12x15 */
+  const r=state.score/max;
+  const stars = r>=0.9?'⭐⭐⭐⭐⭐': r>=0.75?'⭐⭐⭐⭐': r>=0.6?'⭐⭐⭐': r>=0.4?'⭐⭐':'⭐';
+  document.getElementById('starRow').textContent=stars;
+  const rep=document.getElementById('finalReport');
+  rep.innerHTML='';
+  ['dubai','sg','hn'].forEach(key=>{
+    const p=PORTS[key], f=state.build[key];
+    const div=document.createElement('div');
+    div.className='pp pp-'+(key==='dubai'?'dubai':key==='sg'?'sg':'hn');
+    div.innerHTML=`<h4>${p.icon} ${p.name}</h4>
+      <p>It was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in <b>${f&&f[0]?f[0]:p.year}</b>. `+
+      `It follows a model of <b>${p.model}</b>. It is famous for <b>${p.strengths}</b>. `+
+      `Its key industries include <b>${p.industries}</b>. In short, it is <b>${p.identity}</b>.</p>`;
+    rep.appendChild(div);
+  });
+}
+
+refreshHome();
+</script>
+</body>
+</html>
