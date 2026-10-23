@@ -273,6 +273,7 @@ const PORTS = {
   },
   sg:{
     name:"Singapore's Free Trade Zones", loc:"Republic of Singapore", icon:"🦁", yearLabel:"Founded", year:"1969",
+    fname:"Singapore's Free Trade Zone system",
     model:"strong governance, strict regulation, and highly efficient customs",
     strengths:"one of the world's most efficient ports, a global headquarters hub, and strong IP protection",
     industries:"finance, high-tech manufacturing, shipping, and the digital economy",
@@ -483,7 +484,7 @@ function startBuild(){
     const d=document.createElement('div');
     d.className='buildport bp-'+(key==='dubai'?'dubai':key==='sg'?'sg':'hn');
     d.innerHTML=`
-      <h3>${p.icon} ${p.name}</h3>
+      <h3>${p.icon} ${p.fname||p.name}</h3>
       <div class="hint">Choose the correct word for each blank. Each correct choice = <b>+15 points</b>.</div>
       <div class="sentence" id="sent-${key}"></div>
       <div class="choices" id="ch-${key}"></div>
@@ -499,7 +500,7 @@ function renderBuildPort(key){
   const filled=state.build[key];
   const sent=document.getElementById('sent-'+key);
   sent.innerHTML =
-    `<b>${p.name}</b> was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in ` +
+    `<b>${p.fname||p.name}</b> was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in ` +
     blank(key,0) + `. It follows a model of ` + blank(key,1) +
     `. It is famous for ` + blank(key,2) + `. Its key industries include ${p.industries}. In short, it is ` + blank(key,3) + `.`;
   const chBox=document.getElementById('ch-'+key);
@@ -543,7 +544,7 @@ function checkPortDone(key){
   if(f.every(v=>v!==null)){
     const intro=document.getElementById('intro-'+key);
     intro.innerHTML='<span class="cap">✔ Your introduction — read it aloud!</span>'+
-      `<b>${p.name}</b> was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in <b>${f[0]}</b>. `+
+      `<b>${p.fname||p.name}</b> was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in <b>${f[0]}</b>. `+
       `It follows a model of <b>${f[1]}</b>. It is famous for <b>${f[2]}</b>. `+
       `Its key industries include <b>${p.industries}</b>. In short, it is <b>${f[3]}</b>.`;
     intro.classList.add('show');
@@ -566,7 +567,7 @@ function showFinish(){
     const p=PORTS[key], f=state.build[key];
     const div=document.createElement('div');
     div.className='pp pp-'+(key==='dubai'?'dubai':key==='sg'?'sg':'hn');
-    div.innerHTML=`<h4>${p.icon} ${p.name}</h4>
+    div.innerHTML=`<h4>${p.icon} ${p.fname||p.name}</h4>
       <p>It was ${p.yearLabel.toLowerCase()==='founded'?'founded':'approved for establishment'} in <b>${f&&f[0]?f[0]:p.year}</b>. `+
       `It follows a model of <b>${p.model}</b>. It is famous for <b>${p.strengths}</b>. `+
       `Its key industries include <b>${p.industries}</b>. In short, it is <b>${p.identity}</b>.</p>`;
